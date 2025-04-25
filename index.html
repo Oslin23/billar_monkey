@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Billar Monkey</title>
+
+  <!-- Fuente Dancing Script -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet"> 
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: white;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      transition: background-image 1s ease-in-out;
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 1;
+    }
+    .content {
+      position: relative;
+      z-index: 2;
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      background-color: rgba(192, 0, 0, 0.8);
+      padding: 20px;
+      text-align: center;
+      font-size: 2.5em;
+      font-weight: bold;
+      width: 100%;
+      font-family: 'Dancing Script', cursive;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+      margin-top: 40px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.5em;
+      padding: 10px 20px;
+      border: 2px solid white;
+      border-radius: 10px;
+      transition: background-color 0.3s, color 0.3s;
+      cursor: pointer;
+    }
+    nav a:hover {
+      background-color: white;
+      color: #000;
+    }
+    .menu-section {
+      display: none;
+      margin-top: 40px;
+      text-align: center;
+    }
+    .menu-section ul {
+      list-style: none;
+      padding: 0;
+      font-size: 1.5em;
+    }
+    .menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      padding: 10px;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 8px;
+    }
+    .add-btn {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: 15px;
+      font-size: 0.8em;
+    }
+    .add-btn:hover {
+      background-color: #45a049;
+    }
+    .cart-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: rgba(192, 0, 0, 0.9);
+      padding: 15px;
+      border-radius: 10px;
+      max-width: 300px;
+      z-index: 100;
+    }
+    .cart-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-size: 1.2em;
+      text-align: center;
+    }
+    .cart-items {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .cart-total {
+      font-weight: bold;
+      margin-top: 10px;
+      text-align: right;
+    }
+    .clear-cart {
+      background-color: #f44336;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 0.8em;
+    }
+    .clear-cart:hover {
+      background-color: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="content">
+    <header>
+      Billar Monkey
+    </header>
+    <nav>
+      <a onclick="showSection('food')">Comida</a>
+      <a onclick="showSection('drinks')">Drinks</a>
+      <a onclick="showSection('snacks')">Snacks</a>
+      <a onclick="showSection('bebidas')">Bebidas</a>
+      <a onclick="showSection('cerveza')">Cerveza</a>
+    </nav>
+
+    <section id="food" class="menu-section">
+      <ul>
+        <li class="menu-item">
+          <span>🍔 Hamburguesa Hawaiana - $75</span>
+          <button class="add-btn" onclick="addToCart('🍔 Hamburguesa Hawaiana', 75)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🍔 Hamburguesa Sencilla - $70</span>
+          <button class="add-btn" onclick="addToCart('🍔 Hamburguesa Sencilla', 70)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🌭 Hot dog (Orden de 3) - $45</span>
+          <button class="add-btn" onclick="addToCart('🌭 Hot dog (Orden de 3)', 45)">Agregar</button>
+        </li>
+      </ul>
+    </section>
+
+    <section id="drinks" class="menu-section">
+      <ul>
+        <li class="menu-item">
+          <span>🍹 Mojito 1L - $120</span>
+          <button class="add-btn" onclick="addToCart('🍹 Mojito 1L', 120)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🔵 Blue - $100</span>
+          <button class="add-btn" onclick="addToCart('🔵 Blue', 100)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🔵 Blue 1/2 - $60</span>
+          <button class="add-btn" onclick="addToCart('🔵 Blue 1/2', 60)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🥃 Buchanans - $130</span>
+          <button class="add-btn" onclick="addToCart('🥃 Buchanans', 130)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🥃 Jack Daniels - $100</span>
+          <button class="add-btn" onclick="addToCart('🥃 Jack Daniels', 100)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🥃 Red Label - $95</span>
+          <button class="add-btn" onclick="addToCart('🥃 Red Label', 95)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🍸 Absolut - $90</span>
+          <button class="add-btn" onclick="addToCart('🍸 Absolut', 90)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🥃 Torres 10 - $90</span>
+          <button class="add-btn" onclick="addToCart('🥃 Torres 10', 90)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🥃 Tradicional - $80</span>
+          <button class="add-btn" onclick="addToCart('🥃 Tradicional', 80)">Agregar</button>
+        </li>
+      </ul>
+    </section>
+
+    <section id="snacks" class="menu-section">
+      <ul>
+        <li class="menu-item">
+          <span>🍗 Alitas BBQ-Búfalo - $55</span>
+          <button class="add-btn" onclick="addToCart('🍗 Alitas BBQ-Búfalo', 55)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🧀 Nachos sencillos - $40</span>
+          <button class="add-btn" onclick="addToCart('🧀 Nachos sencillos', 40)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🥩 Nachos con carne - $60</span>
+          <button class="add-btn" onclick="addToCart('🥩 Nachos con carne', 60)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🍟 Papas a la francesa - $45</span>
+          <button class="add-btn" onclick="addToCart('🍟 Papas a la francesa', 45)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🍜 Maruchan - $30</span>
+          <button class="add-btn" onclick="addToCart('🍜 Maruchan', 30)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🍿 Palomitas (Mantequilla / Natural) - $30</span>
+          <button class="add-btn" onclick="addToCart('🍿 Palomitas (Mantequilla / Natural)', 30)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🥒 Cueritos - $25</span>
+          <button class="add-btn" onclick="addToCart('🥒 Cueritos', 25)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🥔 Papas locas - $30</span>
+          <button class="add-btn" onclick="addToCart('🥔 Papas locas', 30)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🍖 Canasta de chicharrones - $15</span>
+          <button class="add-btn" onclick="addToCart('🍖 Canasta de chicharrones', 15)">Agregar</button>
+        </li>
+      </ul>
+    </section>
+
+    <section id="bebidas" class="menu-section">
+      <ul>
+        <li class="menu-item">
+          <span>🥤 Malteada (Vainilla, fresa, chocolate, oreo) - $45</span>
+          <button class="add-btn" onclick="addToCart('🥤 Malteada (Vainilla, fresa, chocolate, oreo)', 45)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🥤 Refrescos - $25</span>
+          <button class="add-btn" onclick="addToCart('🥤 Refrescos', 25)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🍋 Limonada - $30</span>
+          <button class="add-btn" onclick="addToCart('🍋 Limonada', 30)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🍊 Naranjada - $30</span>
+          <button class="add-btn" onclick="addToCart('🍊 Naranjada', 30)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🫧 Tehuacán preparado - $30</span>
+          <button class="add-btn" onclick="addToCart('🫧 Tehuacán preparado', 30)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🍷 Sangría preparada - $30</span>
+          <button class="add-btn" onclick="addToCart('🍷 Sangría preparada', 30)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>💧 Agua embotellada - $20</span>
+          <button class="add-btn" onclick="addToCart('💧 Agua embotellada', 20)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>☕ Taza de café - $25</span>
+          <button class="add-btn" onclick="addToCart('☕ Taza de café', 25)">Agregar</button>
+        </li>
+      </ul>
+    </section>
+
+    <section id="cerveza" class="menu-section">
+      <ul>
+        <li class="menu-item">
+          <span>🍺 Michelada 1L - $70</span>
+          <button class="add-btn" onclick="addToCart('🍺 Michelada 1L', 70)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🍺 Michelada 1/2 - $40</span>
+          <button class="add-btn" onclick="addToCart('🍺 Michelada 1/2', 40)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🍺 Michelada 1L (Tamarindo, mango) - $45</span>
+          <button class="add-btn" onclick="addToCart('🍺 Michelada 1L (Tamarindo, mango)', 45)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🍺 Clamachela 1/2 - $45</span>
+          <button class="add-btn" onclick="addToCart('🍺 Clamachela 1/2', 45)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🍺 Clamachela 1L - $80</span>
+          <button class="add-btn" onclick="addToCart('🍺 Clamachela 1L', 80)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🍺 Victoria - $30</span>
+          <button class="add-btn" onclick="addToCart('🍺 Victoria', 30)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🍺 Corona - $30</span>
+          <button class="add-btn" onclick="addToCart('🍺 Corona', 30)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🍺 Negra Modelo - $35</span>
+          <button class="add-btn" onclick="addToCart('🍺 Negra Modelo', 35)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🍺 Modelo Especial - $35</span>
+          <button class="add-btn" onclick="addToCart('🍺 Modelo Especial', 35)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🍺 Ultra - $40</span>
+          <button class="add-btn" onclick="addToCart('🍺 Ultra', 40)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🍺 Stella Artois - $42</span>
+          <button class="add-btn" onclick="addToCart('🍺 Stella Artois', 42)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🍺 Caguama - $70</span>
+          <button class="add-btn" onclick="addToCart('🍺 Caguama', 70)">Agregar</button>
+        </li>
+        <li class="menu-item">
+          <span>🍺 Cubetazo - $150</span>
+          <button class="add-btn" onclick="addToCart('🍺 Cubetazo', 150)">Agregar</button>
+        </li>
+      </ul>
+    </section>
+  </div>
+
+  <!-- Carrito de compras -->
+  <div class="cart-container" id="cartContainer">
+    <div class="cart-title">🛒 Carrito</div>
+    <div class="cart-items" id="cartItems">
+      <!-- Los items del carrito se agregarán aquí -->
+    </div>
+    <div class="cart-total" id="cartTotal">Total: $0</div>
+    <button class="clear-cart" onclick="clearCart()">Vaciar carrito</button>
+  </div>
+
+  <script>
+    const images = [
+      'img/fondo1.jpg',
+      'img/fondo2.jpg',
+      'img/fondo3.jpg',
+      'img/fondo4.jpg'
+    ];
+
+    let index = 0;
+    let cart = [];
+
+    function changeBackground() {
+      document.body.style.backgroundImage = `url(${images[index]})`;
+      index = (index + 1) % images.length;
+    }
+
+    function showSection(sectionId) {
+      const sections = document.querySelectorAll('.menu-section');
+      sections.forEach(section => {
+        section.style.display = 'none';
+      });
+      const sectionToShow = document.getElementById(sectionId);
+      if (sectionToShow) {
+        sectionToShow.style.display = 'block';
+      }
+    }
+
+    function addToCart(name, price) {
+      // Verificar si el producto ya está en el carrito
+      const existingItem = cart.find(item => item.name === name);
+      
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        cart.push({
+          name: name,
+          price: price,
+          quantity: 1
+        });
+      }
+      
+      updateCart();
+    }
+
+    function updateCart() {
+      const cartItemsElement = document.getElementById('cartItems');
+      const cartTotalElement = document.getElementById('cartTotal');
+      
+      // Limpiar el carrito
+      cartItemsElement.innerHTML = '';
+      
+      // Calcular total
+      let total = 0;
+      
+      // Agregar cada item al carrito
+      cart.forEach(item => {
+        const itemElement = document.createElement('div');
+        itemElement.className = 'cart-item';
+        
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        
+        itemElement.innerHTML = `
+          <span>${item.name} x${item.quantity}</span>
+          <span>$${itemTotal}</span>
+        `;
+        
+        cartItemsElement.appendChild(itemElement);
+      });
+      
+      // Actualizar total
+      cartTotalElement.textContent = `Total: $${total}`;
+    }
+
+    function clearCart() {
+      cart = [];
+      updateCart();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      changeBackground();
+      setInterval(changeBackground, 3000);
+    });
+  </script>
+</body>
+</html>
